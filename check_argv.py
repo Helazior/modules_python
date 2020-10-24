@@ -67,7 +67,7 @@ def split_argv(tab_argv):
 def check_inter(argument_value, min_value, max_value, tab_argv, num_arg):
     """Vérifie que le nombre est bien dans l'interval."""
     try:
-        assert min_value <= argument_value and argument_value <= max_value
+        assert min_value <= argument_value <= max_value #!propre à python, sinon mettre un and
     except AssertionError:
         print("\nErreur : on veut: ", min_value, " ⩽ ", tab_argv.name[num_arg], " ⩽ ",\
         max_value, "\net ", tab_argv.name[num_arg], " = ", argument_value, sep='')
@@ -80,7 +80,7 @@ def file_or_dir(tab_argv, tab_argv_valides, type_argv, argument):
             print("L'argument", argument, "doit être un fichier existant.")
             utilisation(tab_argv)
         tab_argv_valides.append(argument)
-    elif type_argv == dir:
+    elif type_argv is dir:
         if not os.path.isdir(argument):
             print("L'argument", argument, "doit être un dossier existant.")
             utilisation(tab_argv)
@@ -108,7 +108,7 @@ def check(tab_argv):
             type_argv = dic_str_to_type[tab_argv.type[num_arg]] #peut lèver KeyError
             argument = sys.argv[num_arg + 1]
             #cas particulier:
-            if type_argv == "file" or type_argv == dir:
+            if type_argv in ["file", dir]:
                 file_or_dir(tab_argv, tab_argv_valides, type_argv, argument)
                 continue
 
@@ -118,7 +118,7 @@ def check(tab_argv):
             #Désavantage: peut laisser passer trop de choses
             argument_value = type_argv(argument) #peut lever ValueError
 
-            if (type_argv == int or type_argv == float) and tab_argv.min[num_arg] != "":
+            if type_argv in [int, float] and tab_argv.min[num_arg] != "":
                 min_value = type_argv(tab_argv.min[num_arg])
                 max_value = type_argv(tab_argv.max[num_arg])
                 #fonction pour ne pas avoir plus de 12 branches pour faire plaisir à pylint
